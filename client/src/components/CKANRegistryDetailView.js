@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import CKANApi from 'lib/CKANApi';
 
 /**
@@ -31,7 +31,7 @@ class CKANRegistryDetailView extends Component {
    * @param {object} prevProps
    */
   componentDidUpdate(prevProps) {
-    if (prevProps.match && prevProps.match.item !== this.props.match.item) {
+    if (prevProps.params?.item !== this.props.params?.item) {
       this.loadData();
     }
   }
@@ -40,7 +40,7 @@ class CKANRegistryDetailView extends Component {
    * Load the current "item" (_id) resource dataset from the CKAN API
    */
   loadData() {
-    const { spec: { endpoint, identifier }, fields, match: { params } } = this.props;
+    const { spec: { endpoint, identifier }, fields, params } = this.props;
 
     const recordMapper = record => {
       const newRecord = {};
@@ -142,4 +142,9 @@ CKANRegistryDetailView.defaultProps = {
   basePath: '/',
 };
 
-export default CKANRegistryDetailView;
+function CKANRegistryDetailViewWrapper(props) {
+  const params = useParams();
+  return <CKANRegistryDetailView {...props} params={params} />;
+}
+
+export default CKANRegistryDetailViewWrapper;
